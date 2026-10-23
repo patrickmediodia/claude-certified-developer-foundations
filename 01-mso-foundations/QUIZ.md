@@ -16,10 +16,10 @@ call rises steadily as the conversation goes on. What best explains this?
 
 **Q2.** You must classify 1,000,000 support tickets into 5 categories overnight; latency
 does not matter and you want minimum cost. Best combination?
-- A. Opus 4.8 with streaming
-- B. Sonnet 5 with prompt caching, one request per ticket
-- C. Haiku 4.5 via the Message Batches API
-- D. Fable 5 with the Batch API
+- A. Opus 5.5 with streaming
+- B. Sonnet 5.5 with prompt caching, one request per ticket
+- C. Haiku 5.5 via the Message Batches API
+- D. Fable 5.1 with the Batch API
 
 **Q3.** Across repeated requests that share a large, supposedly-identical system prompt,
 `usage.cache_read_input_tokens` is always 0. The most likely cause?
@@ -34,7 +34,7 @@ does not matter and you want minimum cost. Best combination?
 - C. Token counts are model-specific; use the Token Counting API (`count_tokens`)
 - D. Only output tokens are counted toward the context window
 
-**Q5.** A request to Opus 4.8 returns `stop_reason: "max_tokens"`. What happened, and the fix?
+**Q5.** A request to Opus 5.5 returns `stop_reason: "max_tokens"`. What happened, and the fix?
 - A. The context window was exceeded; switch models
 - B. The output hit the `max_tokens` cap and was truncated; raise `max_tokens` (and stream if large)
 - C. The input was too long; enable prompt caching
@@ -64,7 +64,9 @@ Which is true about the cost profile?
 - **Q4 → C.** Counts are model-specific; use `count_tokens`. tiktoken is OpenAI's and
   undercounts Claude; a token ≠ a word; context window counts input **and** output.
 - **Q5 → B.** `max_tokens` caps output; hitting it truncates. Raise it (stream for large
-  outputs to avoid HTTP timeouts). Context-window overflow is a different error.
+  outputs to avoid HTTP timeouts). Context-window overflow is a different error. Note that
+  Opus 5.5 always thinks, and thinking tokens count toward `max_tokens` — a low cap can be
+  consumed before the visible answer is finished.
 - **Q6 → B.** 100,000 input × $x vs 200 output × 5$x → input still dominates
   (100,000 ≫ 200×5 = 1,000 token-equivalents). Output rate is higher *per token*, but
   there are far fewer output tokens here.

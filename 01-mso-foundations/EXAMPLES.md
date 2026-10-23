@@ -1,7 +1,7 @@
 # Module 1 — MSO Foundations: Worked Examples
 
-Concrete, exam-relevant examples. All use current models/API (Opus 4.8, Sonnet 5,
-Haiku 4.5, Fable 5; adaptive thinking; `effort`; `output_config.format`).
+Concrete, exam-relevant examples. All use current models/API (Opus 5.5, Sonnet 5.5,
+Haiku 5.5, Fable 5.1; adaptive thinking; `effort`; `output_config.format`).
 
 ---
 
@@ -18,7 +18,7 @@ messages = [
     {"role": "user", "content": "What's my name?"},   # only works because turns 1-2 are resent
 ]
 resp = client.messages.create(
-    model="claude-sonnet-5", max_tokens=1024, messages=messages,
+    model="claude-sonnet-5-5", max_tokens=1024, messages=messages,
 )
 ```
 At turn 10 you resend turns 1–9 → input tokens (and cost) grow every turn.
@@ -33,9 +33,9 @@ cost = input_tokens × input_rate + output_tokens × output_rate   (rates per 1M
 
 | Scenario | Model | Input | Output | Cost |
 |---|---|---|---|---|
-| Summarize 50k-token doc, 500-token summary | Sonnet 5 | 50,000 | 500 | 50k×$3/1M + 500×$15/1M = **$0.1575** |
-| Same, but on Opus 4.8 | Opus 4.8 | 50,000 | 500 | 50k×$5/1M + 500×$25/1M = **$0.2625** |
-| Classify 1 ticket (one word out) | Haiku 4.5 | 300 | 5 | 300×$1/1M + 5×$5/1M ≈ **$0.000325** |
+| Summarize 50k-token doc, 500-token summary | Sonnet 5.5 | 50,000 | 500 | 50k×$2/1M + 500×$10/1M = **$0.105** |
+| Same, but on Opus 5.5 | Opus 5.5 | 50,000 | 500 | 50k×$4/1M + 500×$20/1M = **$0.21** |
+| Classify 1 ticket (one word out) | Haiku 5.5 | 300 | 5 | 300×$0.10/1M + 5×$0.50/1M ≈ **$0.0000325** |
 
 Note how **output rate dominates** when output is long, and how model choice swings cost.
 
@@ -46,11 +46,11 @@ Note how **output rate dominates** when output is long, and how model choice swi
 ```python
 # Model-specific. Do NOT use tiktoken for Claude.
 count = client.messages.count_tokens(
-    model="claude-opus-4-8",
+    model="claude-opus-5-5",
     messages=[{"role": "user", "content": open("CLAUDE.md").read()}],
 )
 print(count.input_tokens)
-est_input_cost = count.input_tokens * 5 / 1_000_000   # $5/1M for Opus 4.8 input
+est_input_cost = count.input_tokens * 4 / 1_000_000   # $4/1M for Opus 5.5 input
 ```
 
 ---
@@ -59,7 +59,7 @@ est_input_cost = count.input_tokens * 5 / 1_000_000   # $5/1M for Opus 4.8 input
 
 ```python
 resp = client.messages.create(
-    model="claude-sonnet-5",
+    model="claude-sonnet-5-5",
     max_tokens=1024,
     system=[{
         "type": "text",
@@ -69,7 +69,7 @@ resp = client.messages.create(
     messages=[{"role": "user", "content": "Question that varies per request"}],
 )
 print(resp.usage.cache_creation_input_tokens)  # >0 on first call (cache write ~1.25x)
-print(resp.usage.cache_read_input_tokens)      # >0 on repeats (cache read ~0.1x)
+print(resp.usage.cache_read_input_tokens)      # >0 on repeats (cache read ~0.1x; 0.05x on Sonnet 5.5 / Opus 5.5)
 ```
 
 **Silent cache-killer (exam trap):**
@@ -92,7 +92,8 @@ from anthropic.types.messages.batch_create_params import Request
 batch = client.messages.batches.create(requests=[
     Request(custom_id=f"ticket-{i}",
             params=MessageCreateParamsNonStreaming(
-                model="claude-haiku-4-5", max_tokens=16,
+                model="claude-haiku-5-5", max_tokens=256,
+                thinking={"type": "disabled"},  # Haiku 5.5 thinks by default; thinking tokens count toward max_tokens
                 messages=[{"role": "user",
                            "content": f"Classify into [billing|bug|feature|praise|other]: {t}"}]))
     for i, t in enumerate(tickets)
@@ -107,7 +108,7 @@ batch = client.messages.batches.create(requests=[
 
 | Task | Right model | Why |
 |---|---|---|
-| Sentiment of a tweet | Haiku 4.5 | Trivial; speed + cost win |
-| Draft + refactor a service in a large codebase | Opus 4.8 | Needs deep reasoning / long horizon |
-| High-volume production summarization | Sonnet 5 | Near-Opus quality at Sonnet cost |
-| Hardest multi-hour autonomous agent run | Fable 5 | Most capable; justify the premium |
+| Sentiment of a tweet | Haiku 5.5 | Trivial; speed + cost win |
+| Draft + refactor a service in a large codebase | Opus 5.5 | Needs deep reasoning / long horizon |
+| High-volume production summarization | Sonnet 5.5 | Strong quality at half Opus cost |
+| Hardest multi-hour autonomous agent run | Fable 5.1 | Most capable; justify the premium |
