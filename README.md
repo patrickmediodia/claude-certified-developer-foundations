@@ -35,7 +35,8 @@ module quizzes in the terminal. It gives you a row to paste into `PROGRESS.md`.
 
 ## Install
 
-Prerequisites: [Claude Code](https://code.claude.com/docs/en/overview), git, and Node.js 20+ (for tutui).
+Prerequisites: [Claude Code](https://code.claude.com/docs/en/overview), git, and Node.js 22+ (for tutui;
+on Fedora: `sudo dnf install nodejs`).
 
 ```bash
 git clone git@github.com:patrickmediodia/claude-certified-developer-foundations.git
