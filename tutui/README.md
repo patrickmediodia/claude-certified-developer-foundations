@@ -28,8 +28,6 @@ Requires **Node.js 22+** (Ink 8's minimum).
 cd tutui
 npm install        # also compiles to dist/ via the "prepare" script
 npm start          # runs from source with tsx
-# or
-npx tutui          # runs the compiled bin (dist/cli.js)
 ```
 
 Other scripts:
