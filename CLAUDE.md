@@ -62,3 +62,19 @@ For every lesson or topic we tackle, follow these steps **in order**:
 ## Progress tracker
 See `PROGRESS.md` for per-topic status (not started / learning / tested / mastered) and quiz scores.
 Update it after every quiz.
+
+## Multi-surface sync protocol (Claude Code ⇄ claude.ai Project)
+I study on **two surfaces**: Claude Code (this repo, terminal) and a claude.ai
+Project (web/desktop) with this GitHub repo connected via the GitHub connector.
+The **GitHub repo is the single source of truth.** `PROGRESS.md` holds my state.
+
+- **Claude Code (here) is the writer.** It updates `PROGRESS.md`, commits, and pushes.
+  After the push, I re-sync the GitHub connector in the claude.ai Project so the web
+  side sees the latest.
+- **claude.ai Project is a reader.** It cannot write to git. When a web session
+  changes my progress, it outputs the updated `PROGRESS.md` in a copy-pasteable block;
+  I paste that here and Claude Code commits it.
+- **End-of-session ritual (both surfaces):** update `PROGRESS.md` (status + quiz-history
+  table) before ending. Here, also `git add/commit/push`.
+- `PROJECT_INSTRUCTIONS.md` holds the paste-ready custom instructions for the claude.ai
+  Project — keep it in sync with this file's coach role if either changes.
