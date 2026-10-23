@@ -59,6 +59,16 @@ For every lesson or topic we tackle, follow these steps **in order**:
 - Prefer the **latest Claude models** (Claude 5 family, Opus 4.8, Haiku 4.5) in examples.
 - When unsure, verify rather than guess — exam alignment matters more than speed.
 
+## Folder convention (one folder per course module)
+Each module gets a numbered folder containing three files, **created as we work the topic**
+(not pre-scaffolded):
+- `NOTES.md` — the lesson/explanations for that module.
+- `EXAMPLES.md` — worked code/cost examples.
+- `QUIZ.md` — exam-style questions + hidden answer key; scores logged in `PROGRESS.md`.
+
+Folders: `01-mso-foundations/`, `02-prompting-agents-tools/`, `03-claude-code-mcp-integration/`,
+`04-production-evals-security/`, `05-accelerators-ip-contribution/`.
+
 ## Progress tracker
 See `PROGRESS.md` for per-topic status (not started / learning / tested / mastered) and quiz scores.
 Update it after every quiz.
